@@ -1,5 +1,7 @@
 package com.library.service;
 
-public class GenreService {
+import com.library.modal.Genre;
 
+public interface GenreService {
+Genre createGenre(Genre genre);
 }
