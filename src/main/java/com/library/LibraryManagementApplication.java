@@ -1,9 +1,9 @@
-package com.library.library_management;
+package com.library;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = "com.library")
+@SpringBootApplication
 public class LibraryManagementApplication {
 
 	public static void main(String[] args) {
