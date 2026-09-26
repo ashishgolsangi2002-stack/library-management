@@ -3,7 +3,7 @@ package com.library.library_management;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.library")
 public class LibraryManagementApplication {
 
 	public static void main(String[] args) {
