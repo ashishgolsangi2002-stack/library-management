@@ -41,7 +41,7 @@ public class GenreDTO{
 	
 	private List<GenreDTO> subGenre;
 	
-	private long bookCount;
+	private Long bookCount;
 	
 	private LocalDateTime createdAt;
 	

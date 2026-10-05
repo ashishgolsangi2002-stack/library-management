@@ -7,4 +7,5 @@ public interface GenreService {
 	
 
 GenreDTO createGenre(GenreDTO genre);
+List<GenreDTO> get
 }

@@ -1,6 +1,9 @@
 package com.library.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +26,13 @@ public class GenreController {
 	public ResponseEntity<GenreDTO> addGenre(@RequestBody GenreDTO  genre){
 		GenreDTO createdGenre= genreService.createGenre(genre);
 		return ResponseEntity.ok(createdGenre);
+		
+	}
+	
+	@GetMapping()
+	public ResponseEntity<?>getAllGenre(@RequestBody GenreDTO  genre){
+		List<GenreDTO> genres= genreService.getAllGenres();
+		return ResponseEntity.ok(genres);
 		
 	}
 }
