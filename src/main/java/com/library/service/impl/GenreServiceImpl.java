@@ -3,7 +3,6 @@ package com.library.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.library.mapper.GenreMapper;
@@ -12,12 +11,10 @@ import com.library.payload.dto.GenreDTO;
 import com.library.repository.GenreRepository;
 import com.library.service.GenreService;
 
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Builder
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
@@ -35,23 +32,20 @@ public class GenreServiceImpl implements GenreService {
 
         if (genreDTO.getParentGenreId() != null) {
             Genre parentGenre = genreRepository.findById(genreDTO.getParentGenreId())
-                    .orElseThrow(() -> new RuntimeException("Parent genre not found"));
+                    .orElseThrow(() -> new RuntimeException("Parent genre not found with id: " + genreDTO.getParentGenreId()));
             genre.setParentGenre(parentGenre);
         }
 
         Genre savedGenre = genreRepository.save(genre);
 
-        GenreDTO dto= GenreMapper.toDTO(savedGenre);
-        return dto;
+        return GenreMapper.toDTO(savedGenre);
     }
-    
+
     @Override
-    public List<GenreDTO> getAllGenres(){
-    	return genreRepository.findAll().stream()
-    			.map(GenreMapper::toDTO)
-    			.collect(Collectors.toList());
-    	
+    public List<GenreDTO> getAllGenres() {
+        return genreRepository.findAll()
+                .stream()
+                .map(GenreMapper::toDTO)
+                .collect(Collectors.toList());
     }
-    
-    
 }

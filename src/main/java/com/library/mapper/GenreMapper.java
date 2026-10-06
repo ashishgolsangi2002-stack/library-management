@@ -6,7 +6,7 @@ import com.library.modal.Genre;
 import com.library.payload.dto.GenreDTO;
 
 public class GenreMapper{
-	public GenreDTO toDTO(Genre savedGenre) {
+	public static GenreDTO toDTO(Genre savedGenre) {
 		if(savedGenre==null) {
 			return null;
 		}
@@ -28,11 +28,14 @@ public class GenreMapper{
             dto.setParentGenreName(savedGenre.getParentGenre().getName());
         }
 
-    	dto.setSubGenre(savedGenre.getSubGenres().stream()
+    	
+        if (savedGenre.getSubGenres() != null) {
+        dto.setSubGenre(savedGenre.getSubGenres().stream()
 
 		.filter(subGenre-> subGenre.getActive())
-		.map(subGenre-> toDTO(subGenre)).collect(Collectors.toList()));
-
+		.map(subGenre-> toDTO(subGenre))
+		.collect(Collectors.toList()));
+        }
 
 
 //dto.setBookCount((long) (savedGenre.getB));

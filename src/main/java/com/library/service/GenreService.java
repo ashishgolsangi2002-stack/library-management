@@ -1,11 +1,9 @@
 package com.library.service;
 
-import com.library.modal.Genre;
+import java.util.List;
 import com.library.payload.dto.GenreDTO;
 
 public interface GenreService {
-	
-
-GenreDTO createGenre(GenreDTO genre);
-List<GenreDTO> get
+    GenreDTO createGenre(GenreDTO genre);
+    List<GenreDTO> getAllGenres();
 }
