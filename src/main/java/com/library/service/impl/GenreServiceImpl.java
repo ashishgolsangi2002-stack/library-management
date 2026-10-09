@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.library.exception.GenreException;
 import com.library.mapper.GenreMapper;
 import com.library.modal.Genre;
 import com.library.payload.dto.GenreDTO;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
+    private final GenreMapper genreMapper;
 
     @Override
     public GenreDTO createGenre(GenreDTO genreDTO) {
@@ -38,14 +40,65 @@ public class GenreServiceImpl implements GenreService {
 
         Genre savedGenre = genreRepository.save(genre);
 
-        return GenreMapper.toDTO(savedGenre);
+              
+        return genreMapper.toDTO(savedGenre);
     }
 
     @Override
     public List<GenreDTO> getAllGenres() {
         return genreRepository.findAll()
                 .stream()
-                .map(GenreMapper::toDTO)
+                .map(genreMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+	@Override
+	public GenreDTO getGenreById(Long genreId) throws GenreException {
+		// TODO Auto-generated method stub
+		Genre genre=genreRepository.findById(genreId).orElseThrow(
+				()-> new GenreException("genre not found")
+				);
+		return genreMapper.toDTO(genre);
+		}
+
+	@Override
+	public GenreDTO updateGenre(Long genreId, GenreDTO genreDTO) throws GenreException {
+		// TODO Auto-generated method stub
+		Genre existingGenre= genreRepository.findById(genreId).orElseThrow(
+				()-> new GenreException("Genre not found")
+				);
+		genreMapper.updateEntityFromDTO(genreDTO,existingGenre);
+		
+		genreRepository.save(exisitngGenre);
+		}
+
+	@Override
+	public void hardDeleteGenre(Long genreId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<GenreDTO> getAllActiveGenresWithSubGenres() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<GenreDTO> getTopLevelGenres() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getTotalActiveGenres() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getBookCountByGenre(Long genreId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
