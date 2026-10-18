@@ -13,12 +13,13 @@ public interface GenreService {
     GenreDTO createGenre(GenreDTO genre);
     List<GenreDTO> getAllGenres();
     GenreDTO getGenreById(Long genreId) throws GenreException;
-    GenreDTO updateGenre(Long genreId,GenreDTO genre);
-    void hardDeleteGenre(Long genreId);
+    GenreDTO updateGenre(Long genreId,GenreDTO genre) throws GenreException;
+    void hardDeleteGenre(Long genreId) throws GenreException;
     List<GenreDTO> getAllActiveGenresWithSubGenres();
     List<GenreDTO> getTopLevelGenres();
     //Page<GenreDTO> searchGenres(String searchTerm, Pageable pageable);
     Long getTotalActiveGenres();
     Long getBookCountByGenre(Long genreId);
+	void deleteGenre(Long genreId) throws GenreException;
 
 }

@@ -1,5 +1,6 @@
 package com.library.mapper;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -66,12 +67,13 @@ public class GenreMapper{
 
         if (genreDTO.getParentGenreId() != null) {
             genreRepository.findById(genreDTO.getParentGenreId())
-            		.ifPresent(genre::setParentGenre);
+            		.ifPresent(existingGenre::setParentGenre);
             	
         }
+	}
         
         public void updateEntityFromDTO(GenreDTO dto,Genre existingGenre ) {
-        	if(dto==null||genre==null) {
+        	if(dto==null||existingGenre==null) {
         		return ;
         	}
         	
@@ -82,13 +84,15 @@ public class GenreMapper{
         	
         	if(dto.getActive()!=null) {
         		genreRepository.findById(dto.getParentGenreId())
-        		.ifPresent(exisitingGenre::setParentGenre);
+        		.ifPresent(existingGenre::setParentGenre);
         	}
         }
-                    
-       
-		return genre;
+        
+        public List<GenreDTO> toDTOList(List<Genre> genreList){
+        	return genreList.stream().map(genre-> toDTO(genre)).collect(Collectors.toList());
+        }
 	}
+}
 
 	
 }
