@@ -52,11 +52,40 @@ public class GenreController {
     
     
     @DeleteMapping("/{genreId}")
-    public ResponseEntity<?> updateGenre(@RequestParam("genreId") Long genreId, @RequestBody GenreDTO) throws GenreException {
+    public ResponseEntity<?> deleteGenre(@RequestParam("genreId") Long genreId, @RequestBody GenreDTO) throws GenreException {
        genreService.deleteGenre(genreId);
        ApiResponse response= new ApiResponse("Genre Deleted - soft delete", status:true);
         return ResponseEntity.ok(response);
     }
+    
+    @DeleteMapping("/{genreId}/hard")
+    public ResponseEntity<?>hardDeleteGenre(@RequestParam("genreId") Long genreId, @RequestBody GenreDTO) throws GenreException {
+       genreService.deleteGenre(genreId);
+       ApiResponse response= new ApiResponse("Genre Deleted - hard delete", status:true);
+        return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("top-level")
+    public ResponseEntity<?> getTopLevelGenre() {
+        List<GenreDTO> genres = genreService.getTopLevelGenres();
+        return ResponseEntity.ok(genres);
+    }
+    
+    @GetMapping("/count")
+    public ResponseEntity<?> getTotalActiveGenre() {
+        Long  genres = genreService.getTotalActiveGenres();
+        return ResponseEntity.ok(genres);
+    }
+    
+    @GetMapping("/{id}/book-count")
+    public ResponseEntity<?> getBookCountByGenres() {
+    	
+       Long  count = genreService.getBookCountByGenres(id);
+        return ResponseEntity.ok(genres);
+    }
+    
+    
+    
    
     
     
