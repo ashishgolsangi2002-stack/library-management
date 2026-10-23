@@ -13,17 +13,16 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class GenreMapper{
-	
-	private final GenreRepository genreRepository;
-	
-	public  GenreDTO toDTO(Genre savedGenre) {
-		if(savedGenre==null) {
-			return null;
-		}
-		
-		
-				GenreDTO dto = GenreDTO.builder()
+public class GenreMapper {
+
+    private final GenreRepository genreRepository;
+
+    public GenreDTO toDTO(Genre savedGenre) {
+        if (savedGenre == null) {
+            return null;
+        }
+
+        GenreDTO dto = GenreDTO.builder()
                 .id(savedGenre.getId())
                 .code(savedGenre.getCode())
                 .name(savedGenre.getName())
@@ -39,25 +38,22 @@ public class GenreMapper{
             dto.setParentGenreName(savedGenre.getParentGenre().getName());
         }
 
-    	
         if (savedGenre.getSubGenres() != null) {
-        dto.setSubGenre(savedGenre.getSubGenres().stream()
-
-		.filter(subGenre-> subGenre.getActive())
-		.map(subGenre-> toDTO(subGenre))
-		.collect(Collectors.toList()));
+            dto.setSubGenre(savedGenre.getSubGenres().stream()
+                    .filter(subGenre -> Boolean.TRUE.equals(subGenre.getActive()))
+                    .map(this::toDTO)
+                    .collect(Collectors.toList()));
         }
 
-
-//dto.setBookCount((long) (savedGenre.getB));
         return dto;
-	}
-	
-	public Genre toEntity(GenreDTO genreDTO) {
-		if(genreDTO==null) {
-			return null;
-		}
-		Genre genre = Genre.builder()
+    }
+
+    public Genre toEntity(GenreDTO genreDTO) {
+        if (genreDTO == null) {
+            return null;
+        }
+
+        Genre genre = Genre.builder()
                 .code(genreDTO.getCode())
                 .name(genreDTO.getName())
                 .description(genreDTO.getDescription())
@@ -67,32 +63,42 @@ public class GenreMapper{
 
         if (genreDTO.getParentGenreId() != null) {
             genreRepository.findById(genreDTO.getParentGenreId())
-            		.ifPresent(existingGenre::setParentGenre);
-            	
+                    .ifPresent(genre::setParentGenre);
         }
-	}
-        
-        public void updateEntityFromDTO(GenreDTO dto,Genre existingGenre ) {
-        	if(dto==null||existingGenre==null) {
-        		return ;
-        	}
-        	
-        	existingGenre.setCode(dto.getCode());
-        	existingGenre.setName(dto.getname());
-        	existingGenre.setDescription(dto.getDescription());
-        	existingGenre.setDisplayOrder(dto.getDisplayOrder() !=null ? dto.getDisplayOrder():0);
-        	
-        	if(dto.getActive()!=null) {
-        		genreRepository.findById(dto.getParentGenreId())
-        		.ifPresent(existingGenre::setParentGenre);
-        	}
-        }
-        
-        public List<GenreDTO> toDTOList(List<Genre> genreList){
-        	return genreList.stream().map(genre-> toDTO(genre)).collect(Collectors.toList());
-        }
-	}
-}
 
-	
+        return genre;
+    }
+
+    public void updateEntityFromDTO(GenreDTO dto, Genre existingGenre) {
+        if (dto == null || existingGenre == null) {
+            return;
+        }
+
+        if (dto.getCode() != null) {
+            existingGenre.setCode(dto.getCode());
+        }
+        if (dto.getName() != null) {
+            existingGenre.setName(dto.getName());
+        }
+        if (dto.getDescription() != null) {
+            existingGenre.setDescription(dto.getDescription());
+        }
+        if (dto.getDisplayOrder() != null) {
+            existingGenre.setDisplayOrder(dto.getDisplayOrder());
+        }
+        if (dto.getActive() != null) {
+            existingGenre.setActive(dto.getActive());
+        }
+
+        if (dto.getParentGenreId() != null) {
+            genreRepository.findById(dto.getParentGenreId())
+                    .ifPresent(existingGenre::setParentGenre);
+        }
+    }
+
+    public List<GenreDTO> toDTOList(List<Genre> genreList) {
+        return genreList.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
 }

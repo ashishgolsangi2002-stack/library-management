@@ -9,9 +9,11 @@ import com.library.payload.response.ApiResponse;
 
 @RestControllerAdvice
 public class GlobalException {
-	@ExceptionHandler(GenreException.class)
-public ResponseEntity<ApiResponse> handleGenreException(GenreException e){
-	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-			.body(new ApiResponse(e.getMessage(),status:false));
-}
+
+    @ExceptionHandler(GenreException.class)
+    public ResponseEntity<ApiResponse> handleGenreException(GenreException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse(e.getMessage(), false));
+    }
 }
