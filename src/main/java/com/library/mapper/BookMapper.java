@@ -35,9 +35,8 @@ public class BookMapper {
 				.active(book.getActive())
 				.createdAt(book.getCreatedAt())
 				.updatedAt(book.getUpdatedAt())
-				.build();
-		
-		return dto;
-		
+				.build();	
 	}
+	
+	public Book toEntity(BookDTO bookDTO) {}
 }
