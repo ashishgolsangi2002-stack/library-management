@@ -21,47 +21,99 @@ import com.library.payload.response.PageResponse;
 import com.library.service.BookService;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/books")
 public class BookController {
-private final BookService bookService;
 
-@PostMapping
-public ResponseEntity<BookDTO>createBook(
-	@Valid @RequestBody BookDTO bookDTO) throws BookException{
-	BookDTO createdBook= bookService.createBook(bookDTO);
-	return ResponseEntity.ok(createdBook);
+    private final BookService bookService;
+
+    @PostMapping
+    public ResponseEntity<BookDTO> createBook(
+            @Valid @RequestBody BookDTO bookDTO) throws BookException {
+        BookDTO createdBook = bookService.createBook(bookDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<BookDTO>> createBooksBulk(
+            @Valid @RequestBody List<BookDTO> bookDTOs) throws BookException {
+        List<BookDTO> createdBooks = bookService.createBooksBulk(bookDTOs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdBooks);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BookDTO> getBookById(@PathVariable Long id)
+            throws BookException {
+        BookDTO book = bookService.getBookById(id);
+        return ResponseEntity.ok(book);
+    }
+
+    @GetMapping("/isbn/{isbn}")
+    public ResponseEntity<BookDTO> getBookByIsbn(@PathVariable String isbn)
+            throws BookException {
+        BookDTO book = bookService.getBookByISBN(isbn);
+        return ResponseEntity.ok(book);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BookDTO> updateBook(
+            @PathVariable Long id,
+            @Valid @RequestBody BookDTO bookDTO) throws BookException {
+        BookDTO updatedBook = bookService.updateBook(id, bookDTO);
+        return ResponseEntity.ok(updatedBook);
+    }
+
+    /**
+     * Soft delete a book
+     * DELETE /api/books/{id}
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteBook(@PathVariable Long id)
+            throws BookException {
+        bookService.deleteBook(id);
+        return ResponseEntity.ok(new ApiResponse("Book deleted successfully", true));
+    }
+
+    /**
+     * Permanently delete a book
+     * DELETE /api/books/{id}/permanent
+     */
+    @DeleteMapping("/{id}/permanent")
+    public ResponseEntity<ApiResponse> hardDeleteBook(@PathVariable Long id)
+            throws BookException {
+        bookService.hardDeleteBook(id);
+        return ResponseEntity.ok(new ApiResponse("Book permanently deleted", true));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<BookDTO>> advancedSearch(
+            @RequestBody BookSearchRequest searchRequest) {
+        PageResponse<BookDTO> books = bookService.searchBookWithFilters(searchRequest);
+        return ResponseEntity.ok(books);
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<BookStatsResponse> getBookStats() {
+        long totalActive = bookService.getTotalActiveBooks();
+        long totalAvailable = bookService.getTotalAvailableBooks();
+        BookStatsResponse stats = new BookStatsResponse(totalActive, totalAvailable);
+        return ResponseEntity.ok(stats);
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BookStatsResponse {
+        private long totalActiveBooks;
+        private long totalAvailableBooks;
+    }
 }
-
-@PostMapping("/bulk")
-public ResponseEntity<BookDTO>createBookBulk(
-	@Valid @RequestBody BookDTO bookDTO) throws BookException{
-	List<BookDTO> createdBook= bookService.createBooksBulk(bookDTOS);
-	return ResponseEntity.ok(createdBook);
-}
-
-@PostMapping("/{id}")
-public ResponseEntity<BookDTO> getBookById(@PathVariable Long id)
-throws BookException {
-	BookDTO book= bookService.getBookById(id);
-	return ResponseEntity.ok(book);
-	}
-
-@PutMapping("/{id}")
-public ResponseEntity<BookDTO> updateBook(
-	@PathVariable Long id,
-	@Valid @RequestBody BookDTO bookDTO){
-	
-		BookDTO updatedBook= bookService.updatedBook(id, bookDTO);
-		return ResponseEntity.ok(updatedBook);
-	
-	
-}
-
-/**
  * Soft delete a book
  * DELETE /api/books/{id}
  */
