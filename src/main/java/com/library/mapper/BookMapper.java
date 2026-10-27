@@ -3,6 +3,7 @@ package com.library.mapper;
 import org.springframework.stereotype.Component;
 
 import com.library.modal.Book;
+import com.library.modal.Genre;
 import com.library.payload.dto.BookDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,37 @@ public class BookMapper {
 				.build();	
 	}
 	
-	public Book toEntity(BookDTO bookDTO) {}
+	public Book toEntity(BookDTO bookDTO) throws BookException {
+	if(dto==null) {
+		return null;
+	}
+	
+	Book book= new Book();
+	book.setId(dto.getId();
+	book.setIsbn(dto.getIsbn());
+	book.setTitle(dto.getIsbn());
+	book.setAuthor(dto.getAuthor());
+	
+   
+
+    // Map genre - fetch from database using genreId
+    if (dto.getGenreId() != null) {
+        Genre genre = genreRepository.findById(dto.getGenreId())
+            .orElseThrow(() -> new BookException("Genre with ID " + dto.getGenreId() + "not found"));
+        book.setGenre(genre);
+    }
+
+    book.setPublisher(dto.getPublisher());
+    book.setPublicationDate(dto.getPublicationDate());
+    book.setLanguage(dto.getLanguage());
+    book.setPages(dto.getPages());
+    book.setDescription(dto.getDescription());
+    book.setTotalCopies(dto.getTotalCopies());
+    book.setAvailableCopies(dto.getAvailableCopies());
+    book.setPrice(dto.getPrice());
+    book.setCoverImageUrl(dto.getCoverImageUrl());
+    book.setActive(true); // Default to active
+
+    return book;
+	}
 }

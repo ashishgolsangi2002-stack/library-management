@@ -21,4 +21,6 @@ PageResponse<BookDTO> searchBookWithFilters(
 long getTotalActiveBooks();
 
 long getTotalAvailableBooks();
+List<BookDTO> createBooksBulk(List<BookDTO> bookDTOs);
+void hardDeleteBook(Long id);
 }
