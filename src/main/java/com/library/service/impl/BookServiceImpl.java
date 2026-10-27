@@ -31,7 +31,8 @@ public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
 
     @Override
-    public BookDTO createBook(BookDTO bookDTO) {
+    public BookDTO createBook(BookDTO bookDTO) throws BookException {
+        if (bookRepository.existsByIsbn(bookDTO.getIsbn())) {
             throw new BookException(
                     "Book with ISBN " + bookDTO.getIsbn() + " already exists");
         }
@@ -69,7 +70,6 @@ public class BookServiceImpl implements BookService {
         Book existingBook = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookException("Book not found with id: " + bookId));
 
-        // Optional: prevent changing ISBN to one that already exists on another book
         if (bookDTO.getIsbn() != null
                 && !bookDTO.getIsbn().equals(existingBook.getIsbn())
                 && bookRepository.existsByIsbn(bookDTO.getIsbn())) {
@@ -134,8 +134,6 @@ public class BookServiceImpl implements BookService {
         return bookRepository.countAvailablebooks();
     }
 
-    // --- helpers ---
-
     private Pageable createPageable(int page, int size, String sortBy, String sortDirection) {
         size = Math.min(Math.max(size, 1), 100);
         page = Math.max(page, 0);
@@ -162,11 +160,4 @@ public class BookServiceImpl implements BookService {
                 books.isFirst(),
                 books.isEmpty());
     }
-
-	@Override
-	public List<BookDTO> createBooksBulk() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-}
 }
