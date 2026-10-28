@@ -160,4 +160,10 @@ public class BookServiceImpl implements BookService {
                 books.isFirst(),
                 books.isEmpty());
     }
+
+	@Override
+	public PageResponse<BookDTO> searchBooksWithFilters(BookSearchRequest searchRequest) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
