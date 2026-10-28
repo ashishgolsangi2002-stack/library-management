@@ -28,4 +28,6 @@ public interface BookService {
     long getTotalActiveBooks();
 
     long getTotalAvailableBooks();
+
+	PageResponse<BookDTO> searchBooksWithFilters(BookSearchRequest searchRequest);
 }

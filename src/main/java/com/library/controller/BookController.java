@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.library.exception.BookException;
@@ -64,7 +65,7 @@ public class BookController {
     @PutMapping("/{id}")
     public ResponseEntity<BookDTO> updateBook(
             @PathVariable Long id,
-            @Valid @RequestBody BookDTO bookDTO) throws BookException {
+             @RequestBody BookDTO bookDTO) throws BookException {
         BookDTO updatedBook = bookService.updateBook(id, bookDTO);
         return ResponseEntity.ok(updatedBook);
     }
@@ -83,12 +84,36 @@ public class BookController {
         return ResponseEntity.ok(new ApiResponse("Book permanently deleted", true));
     }
 
+    @GetMapping
+    public ResponseEntity<PageResponse<BookDTO>> searchBooks(
+            @RequestParam(required = false) Long genreId,
+            @RequestParam(required = false, defaultValue="false") Boolean availableOnly,
+            @RequestParam(defaultValue = "true") boolean activeOnly,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
+    	// Build search request from query parameters
+    	BookSearchRequest searchRequest = new BookSearchRequest();
+    	searchRequest.setGenreId(genreId);
+    	searchRequest.setAvailableOnly(availableOnly);
+    	searchRequest.setPage(page);
+    	searchRequest.setSize(size);
+    	searchRequest.setSortBy(sortBy);
+    	searchRequest.setSortDirection(sortDirection);
+
+    	PageResponse<BookDTO> books = bookService.searchBooksWithFilters(searchRequest);
+    	return ResponseEntity.ok(books);
+    	
+    }
+    
     @PostMapping("/search")
     public ResponseEntity<PageResponse<BookDTO>> advancedSearch(
             @RequestBody BookSearchRequest searchRequest) {
         PageResponse<BookDTO> books = bookService.searchBookWithFilters(searchRequest);
         return ResponseEntity.ok(books);
     }
+    
 
     @GetMapping("/stats")
     public ResponseEntity<BookStatsResponse> getBookStats() {
