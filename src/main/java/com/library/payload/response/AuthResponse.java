@@ -1,5 +1,7 @@
 package com.library.payload.response;
 
+import com.library.payload.dto.UserDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
