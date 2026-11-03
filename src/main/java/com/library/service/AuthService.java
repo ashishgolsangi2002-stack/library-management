@@ -8,6 +8,6 @@ AuthResponse login(String username, String password);
 AuthResponse signup(UserDTO req);
 
 void createPasswordResetToken(String email);
-void resetPassword(String token, String newPassword);
+void resetPassword(String token, String newPassword) throws Exception;
 
 }
