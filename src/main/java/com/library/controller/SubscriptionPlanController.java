@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.library.payload.dto.SubscriptionPlanDTO;
+import com.library.payload.response.ApiResponse;
 import com.library.service.SubscriptionPlanService;
 
 import jakarta.validation.Valid;
@@ -68,7 +69,7 @@ public class SubscriptionPlanController {
 			@PathVariable long id
 			) throws Exception{
 		List<SubscriptionPlanDTO>plans= subscriptionPlanService.deleteSubscriptionPlan(id);
-				
+		ApiResponse res=new ApiResponse("plan deleted successfully");		
 		return ResponseEntity.ok(plans);
 	}
 }
