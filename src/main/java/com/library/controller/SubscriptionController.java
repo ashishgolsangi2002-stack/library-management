@@ -5,12 +5,16 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.library.exception.SubscriptionException;
 import com.library.payload.dto.SubscriptionDTO;
+import com.library.payload.response.ApiResponse;
 import com.library.service.SubscriptionService;
 
 import jakarta.validation.Valid;
@@ -31,6 +35,16 @@ public class SubscriptionController {
 		return ResponseEntity.ok(dto);
 	}
 
+	@GetMapping("/user/active")
+	public ResponseEntity<?> getUsersActiveSubscription(
+		@RequestParam(required=false) Long userId
+		){
+		
+		List<SubscriptionDTO> dtoList= subscriptionService.
+				getUsersActiveSubscription(userId);
+		return ResponseEntity.ok(dtoList);
+	}
+	
 	@GetMapping("/admin")
 	public ResponseEntity<?> getAllSubscriptions(){
 		int page=0;
@@ -45,10 +59,30 @@ public class SubscriptionController {
 		int page=0;
 		int size=10;
 		Pageable pageable=PageRequest.of(page, size);
-		List<SubscriptionDTO> dtoList= subscriptionService.deactivateExpiredSubscriptions();
-		
-		return ResponseEntity.ok(dtoList);
+		subscriptionService.deactivateExpiredSubscriptions();
+		ApiResponse res= new ApiResponse("task done", true);
+		return ResponseEntity.ok(res);
 	}
 	
+	@PostMapping("/cancel/{subscriptionId}")
+	public ResponseEntity<?> cancelSubscription(
+			@PathVariable Long subscriptionId,
+			@RequestParam(required=false) String reason
+			) throws SubscriptionException {
+		SubscriptionDTO subscription= subscriptionService
+				.cancelSubscription(subscriptionId,  reason);
+		return ResponseEntity.ok(subscription);
+		}
 	
+	
+	@PostMapping("/activate")
+	public ResponseEntity<?> activateSubscription(
+	        @RequestParam Long subscriptionId,
+	        @RequestParam Long paymentId)throws SubscriptionException {
+	    
+	        SubscriptionDTO subscription = subscriptionService.activeSubscription(subscriptionId, paymentId
+	        return ResponseEntity.ok(subscription);
+	    
+	
+
 }

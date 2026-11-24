@@ -35,8 +35,9 @@ public class SubscriptionImpl implements SubscriptionService {
 		
 		//Optional<sub>
 		
-		Subscription subscription= subscriptionMapper.toEntity(subscriptionDTO);
+		Subscription subscription= subscriptionMapper.toEntity(subscriptionDTO,plan,user);
 		subscription.initializeFromPlan();
+		subscription.setIsActive(false);		
 		Subscription savedSubscription=subscriptionRepository.save(subscription);
 		//create payment (todo)
 		return subscriptionMapper.toDTO(savedSubscription);

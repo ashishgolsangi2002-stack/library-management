@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.library.exception.SubscriptionException;
 import com.library.modal.Subscription;
+import com.library.modal.SubscriptionPlan;
 import com.library.modal.User;
 import com.library.payload.dto.SubscriptionDTO;
 import com.library.repository.SubscriptionPlanRepository;
@@ -68,40 +69,21 @@ public class SubscriptionMapper {
 }
 	
 	 
-	public Subscription toEntity(SubscriptionDTO dto) throws SubscriptionException {
+	public Subscription toEntity(SubscriptionDTO dto, SubscriptionPlan plan, User user) throws SubscriptionException {
 	    if (dto == null) {
 	        return null;
 	    }
 
 	    Subscription subscription = new Subscription();
 	    subscription.setId(dto.getId());
-
-	    // Map user
-	    if (dto.getUserId() != null) {
-	        User user = userRepository.findById(dto.getUserId())
-	                .orElseThrow(() -> new SubscriptionException("User not found with ID: ""));
-	        subscription.setUser(user);
-	    }
+	    subscription.setUser(user);
+	    subscription.setPlan(plan);
+	    subscription.setNotes(dto.getNotes());
 	    
-	    // Map plan
-	    if (dto.getPlanId() != null) {
-	        SubscriptionPlan plan = planRepository.findById(dto.getPlanId())
-	                .orElseThrow(() -> new SubscriptionException("Subscription plan not fou"));
-	        subscription.setPlan(plan);
-	    }
+	    return subscription;
 
-	    subscription.setPlanName(dto.getPlanName());
-	    subscription.setPlanCode(dto.getPlanCode());
-	    subscription.setPrice(dto.getPrice());
-	    subscription.setCurrency(dto.getCurrency());
-	    subscription.setStartDate(dto.getStartDate());
-	    subscription.setEndDate(dto.getEndDate());
-	    subscription.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : true);
-	    subscription.setMaxBooksAllowed(dto.getMaxBooksAllowed());
-	    subscription.setMaxDaysPerBook(dto.getMaxDaysPerBook());
-	    subscription.setAutoRenew(dto.getAutoRenew() != null ? dto.getAutoRenew() : false);
-        subscription.setCancelledAt(dto.CancelledAt());
-	
+
+	    
 }
 	public List<SubscriptionDTO> toDTOList(List<Subscription> subscriptions) {
 	    if (subscriptions == null) {

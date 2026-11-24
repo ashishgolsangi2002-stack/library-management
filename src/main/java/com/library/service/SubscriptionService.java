@@ -22,5 +22,7 @@ public interface SubscriptionService { //Once we implement payment, it returns p
 	void deactivateExpiredSubscription() throws Exception;
 
 	List<SubscriptionDTO> getAllSubscriptions();
+
+	List<SubscriptionDTO> getUsersActiveSubscription();
 	
 	}
